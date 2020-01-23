@@ -145,4 +145,20 @@ void Impl::get(std::string archive_file,CPIO_FILES& files) {
   archive_write_free(ext);
 }
 
+//API
+
+CPIO_FILES show(const std::string& file)
+{
+  return Impl::show(file);
+}
+
+void put(std::string archive_file, CPIO_FILES& files)
+{
+  Impl::put(archive_file, files);
+}
+
+void get(std::string archive_file,CPIO_FILES& files)
+{
+  Impl::get(archive_file, files);
+}
 
