@@ -18,11 +18,11 @@ CPIO_FILES fillInFiles()
   getline(cin, line);
   string file;
 
-  std::string delimiter = " ";
+  string delimiter = " ";
 
   size_t pos = 0;
-  std::string token;
-  while ((pos = line.find(delimiter)) != std::string::npos) {
+  string token;
+  while ((pos = line.find(delimiter)) != string::npos) {
       token = line.substr(0, pos);
       if (!token.empty())
         files.push_back(token);
@@ -41,40 +41,52 @@ int main(int argc, char** argv) {
     cout << "-- To extract files from the archive type \'"<< GET <<" file1 file2 ... filen\'\n";
     cout << "-- Enter Q for exit\n>>";
 
-    std::string cmd;
+    string cmd;
     cin >> cmd;
 
     if (cmd=="Q" || cmd=="q")
       break;
 
-    std::string archf;
+    string archf;
 
     cin >> archf;
 
-    //we can use try...catch here but we won't
-    if (cmd==SHOW)
+    try
     {
-      cout << "\n Files in the "<< archf <<": \n";
-      auto files = show(archf);
-      for (auto& file:files)
+      if (cmd==SHOW)
       {
-        cout << "   " << file << "\n";
+        cout << "\n Files in the "<< archf <<": \n";
+        auto files = show(archf);
+        for (auto& file:files)
+        {
+          cout << "   " << file << "\n";
+        }
+      }
+      else if (cmd==PUT)
+      {
+        auto files = fillInFiles();
+        put(archf, files);
+        cout << "  Put it('em) successfully\n";
+      }
+      else if (cmd==GET)
+      {
+        auto files = fillInFiles();      
+        get(archf, files);
+        cout << "  Got it('em) successfully\n";
+      }
+      else
+      {
+        cout << "  !!! THERE IS NO SUCH COMMAND !!!\n";
       }
     }
-    else if (cmd==PUT)
-    {
-      auto files = fillInFiles();
-      put(archf, files);
+    catch(exception& e){
+      cout << "!!! An error occurred: " << e.what() << endl;
     }
-    else if (cmd==GET)
-    {
-      auto files = fillInFiles();
-      for (auto& file:files)
-      {
-        cout << "   " << file;
-      }
-      get(archf, files);
+    catch(...){
+      cout << "Something went completely wrong. Terminating...";
+      return 1;
     }
+    
   }
   return 0;
 }
