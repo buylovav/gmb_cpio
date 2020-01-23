@@ -69,6 +69,8 @@ void Impl::put(std::string archive_file, CPIO_FILES& files) {
       }
       close(fd);
     }
+    else
+        throw std::runtime_error(std::string("File is not found: ")+filename);
   }
   archive_entry_free(entry);
   archive_write_close(a);
